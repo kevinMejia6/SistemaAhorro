@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Primer Carro - Sistema de Ahorro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '🚗';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.1;
+            top: -50px;
+            right: -50px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .main-content {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .setup-section, .progress-section {
+            background: #f8f9fc;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .setup-section h2, .progress-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            margin-top: 10px;
+            width: auto;
+            padding: 8px 20px;
+            font-size: 14px;
+        }
+
+        .progress-bar-container {
+            background: #ecf0f1;
+            border-radius: 25px;
+            padding: 5px;
+            margin: 20px 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            height: 30px;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            border-radius: 20px;
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .savings-history {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 2px solid #ecf0f1;
+        }
+
+        .savings-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .savings-entry:last-child {
+            border-bottom: none;
+        }
+
+        .savings-amount {
+            font-weight: bold;
+            color: #27ae60;
+            font-size: 1.1em;
+        }
+
+        .savings-date {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .motivational-message {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.1em;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .milestone {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .milestone.completed {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 Mi Primer Carro</h1>
+            <p>Sistema de Ahorro Inteligente</p>
+        </div>
+
+        <div class="main-content">
+            <div class="setup-section">
+                <h2>🎯 Configuración de Meta</h2>
+                
+                <div class="input-group">
+                    <label for="carPrice">Precio del carro ($):</label>
+                    <input type="number" id="carPrice" placeholder="Ej: 15000">
+                </div>
+
+                <div class="input-group">
+                    <label for="currentSavings">Ahorros actuales ($):</label>
+                    <input type="number" id="currentSavings" placeholder="Ej: 2000">
+                </div>
+
+                <div class="input-group">
+                    <label for="monthlyTarget">Meta mensual de ahorro ($):</label>
+                    <input type="number" id="monthlyTarget" placeholder="Ej: 500">
+                </div>
+
+                <button class="btn" onclick="setGoal()">🚀 Establecer Meta</button>
+                
+                <button class="btn" onclick="resetData()" style="background: linear-gradient(135deg, #e74c3c, #c0392b); margin-top: 10px; font-size: 14px;">🗑️ Resetear Datos</button>
+
+                <div id="addSavingsSection" class="hidden" style="margin-top: 30px; border-top: 2px solid #ecf0f1; padding-top: 20px;">
+                    <h3>💰 Agregar Ahorro</h3>
+                    <div class="input-group">
+                        <label for="savingAmount">Cantidad ahorrada ($):</label>
+                        <input type="number" id="savingAmount" placeholder="Ej: 200">
+                    </div>
+                    <button class="btn-add" onclick="addSaving()">➕ Agregar Ahorro</button>
+                </div>
+            </div>
+
+            <div class="progress-section">
+                <h2>📊 Progreso Actual</h2>
+                
+                <div id="progressContent" class="hidden">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar">0%</div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalSaved">$0</div>
+                            <div class="stat-label">Total Ahorrado</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="remaining">$0</div>
+                            <div class="stat-label">Falta Ahorrar</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="monthsLeft">0</div>
+                            <div class="stat-label">Meses Restantes</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="daysLeft">0</div>
+                            <div class="stat-label">Días Aprox.</div>
+                        </div>
+                    </div>
+
+                    <div id="motivationalMessage" class="motivational-message"></div>
+
+                    <div id="milestones"></div>
+
+                    <div class="savings-history">
+                        <h3>📈 Historial de Ahorros</h3>
+                        <div id="savingsHistory"></div>
+                    </div>
+                </div>
+
+                <div id="setupPrompt" class="motivational-message">
+                    ⬅️ Configura tu meta para comenzar a ahorrar para tu primer carro
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let savingsData = {
+            goal: 0,
+            currentAmount: 0,
+            monthlyTarget: 0,
+            history: []
+        };
+
+        // Cargar datos guardados al iniciar
+        function loadSavedData() {
+            const saved = JSON.parse(localStorage.getItem('carSavingsData') || '{}');
+            if (saved.goal) {
+                savingsData = { ...savingsData, ...saved };
+                
+                // Restaurar valores en los inputs
+                document.getElementById('carPrice').value = savingsData.goal;
+                document.getElementById('currentSavings').value = savingsData.currentAmount - getTotalFromHistory();
+                document.getElementById('monthlyTarget').value = savingsData.monthlyTarget;
+                
+                // Mostrar el progreso si ya hay datos guardados
+                document.getElementById('setupPrompt').classList.add('hidden');
+                document.getElementById('progressContent').classList.remove('hidden');
+                document.getElementById('addSavingsSection').classList.remove('hidden');
+                
+                updateProgress();
+                createMilestones();
+                updateSavingsHistory();
+            }
+        }
+
+        // Guardar datos en localStorage
+        function saveData() {
+            localStorage.setItem('carSavingsData', JSON.stringify(savingsData));
+        }
+
+        // Obtener total de ahorros del historial (excluyendo inicial)
+        function getTotalFromHistory() {
+            return savingsData.history.reduce((total, entry) => {
+                return total + (entry.type === 'ahorro' ? entry.amount : 0);
+            }, 0);
+        }
+
+        function setGoal() {
+            const carPrice = parseFloat(document.getElementById('carPrice').value);
+            const currentSavings = parseFloat(document.getElementById('currentSavings').value);
+            const monthlyTarget = parseFloat(document.getElementById('monthlyTarget').value);
+
+            if (!carPrice || carPrice <= 0) {
+                alert('Por favor ingresa un precio válido para el carro');
+                return;
+            }
+
+            if (currentSavings < 0) {
+                alert('Los ahorros actuales no pueden ser negativos');
+                return;
+            }
+
+            if (!monthlyTarget || monthlyTarget <= 0) {
+                alert('Por favor ingresa una meta mensual válida');
+                return;
+            }
+
+            savingsData.goal = carPrice;
+            savingsData.currentAmount = currentSavings || 0;
+            savingsData.monthlyTarget = monthlyTarget;
+
+            // Si hay ahorros actuales, agregarlos al historial
+            if (currentSavings > 0) {
+                savingsData.history.push({
+                    amount: currentSavings,
+                    date: new Date().toLocaleDateString('es-ES'),
+                    type: 'inicial'
+                });
+            }
+
+            document.getElementById('setupPrompt').classList.add('hidden');
+            document.getElementById('progressContent').classList.remove('hidden');
+            document.getElementById('addSavingsSection').classList.remove('hidden');
+
+            updateProgress();
+            createMilestones();
+            saveData(); // Guardar datos después de establecer la meta
+        }
+
+        function addSaving() {
+            const amount = parseFloat(document.getElementById('savingAmount').value);
+
+            if (!amount || amount <= 0) {
+                alert('Por favor ingresa una cantidad válida');
+                return;
+            }
+
+            savingsData.currentAmount += amount;
+            savingsData.history.push({
+                amount: amount,
+                date: new Date().toLocaleDateString('es-ES'),
+                type: 'ahorro'
+            });
+
+            document.getElementById('savingAmount').value = '';
+            updateProgress();
+            updateSavingsHistory();
+            saveData(); // Guardar datos después de agregar ahorro
+        }
+
+        function updateProgress() {
+            const progress = Math.min((savingsData.currentAmount / savingsData.goal) * 100, 100);
+            const remaining = Math.max(savingsData.goal - savingsData.currentAmount, 0);
+            const monthsLeft = remaining > 0 ? Math.ceil(remaining / savingsData.monthlyTarget) : 0;
+            const daysLeft = monthsLeft * 30;
+
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressBar').textContent = progress.toFixed(1) + '%';
+            
+            document.getElementById('totalSaved').textContent = '$' + savingsData.currentAmount.toLocaleString();
+            document.getElementById('remaining').textContent = '$' + remaining.toLocaleString();
+            document.getElementById('monthsLeft').textContent = monthsLeft;
+            document.getElementById('daysLeft').textContent = daysLeft;
+
+            updateMotivationalMessage(progress);
+            updateMilestones();
+        }
+
+        function updateMotivationalMessage(progress) {
+            const messages = [
+                { min: 0, max: 10, msg: "🌟 ¡Excelente inicio! Cada peso cuenta para tu primer carro." },
+                { min: 10, max: 25, msg: "🚀 ¡Vas por buen camino! Ya tienes el " + progress.toFixed(0) + "% de tu meta." },
+                { min: 25, max: 50, msg: "💪 ¡Increíble progreso! Estás a mitad del camino hacia tu carro." },
+                { min: 50, max: 75, msg: "🔥 ¡Imparable! Ya puedes ver tu carro cada vez más cerca." },
+                { min: 75, max: 90, msg: "⭐ ¡Casi lo logras! Tu primer carro está al alcance de tus manos." },
+                { min: 90, max: 100, msg: "🎉 ¡FELICIDADES! ¡Ya tienes el dinero para tu primer carro!" }
+            ];
+
+            const currentMessage = messages.find(m => progress >= m.min && progress < m.max) || messages[messages.length - 1];
+            document.getElementById('motivationalMessage').textContent = currentMessage.msg;
+        }
+
+        function createMilestones() {
+            const milestonesContainer = document.getElementById('milestones');
+            milestonesContainer.innerHTML = '<h3>🏆 Hitos de Progreso</h3>';
+
+            const milestones = [
+                { percent: 25, title: "¡Primer 25%!" },
+                { percent: 50, title: "¡Mitad del camino!" },
+                { percent: 75, title: "¡Ya casi!" },
+                { percent: 100, title: "¡META ALCANZADA!" }
+            ];
+
+            const currentProgress = (savingsData.currentAmount / savingsData.goal) * 100;
+
+            milestones.forEach(milestone => {
+                const milestoneDiv = document.createElement('div');
+                milestoneDiv.className = 'milestone';
+                if (currentProgress >= milestone.percent) {
+                    milestoneDiv.classList.add('completed');
+                    milestoneDiv.innerHTML = `✅ ${milestone.title} - $${(savingsData.goal * milestone.percent / 100).toLocaleString()}`;
+                } else {
+                    milestoneDiv.innerHTML = `🎯 ${milestone.title} - $${(savingsData.goal * milestone.percent / 100).toLocaleString()}`;
+                }
+                milestonesContainer.appendChild(milestoneDiv);
+            });
+        }
+
+        function updateMilestones() {
+            createMilestones();
+        }
+
+        function updateSavingsHistory() {
+            const historyContainer = document.getElementById('savingsHistory');
+            historyContainer.innerHTML = '';
+
+            if (savingsData.history.length === 0) {
+                historyContainer.innerHTML = '<p style="text-align: center; color: #7f8c8d;">No hay ahorros registrados aún</p>';
+                return;
+            }
+
+            savingsData.history.reverse().forEach(entry => {
+                const entryDiv = document.createElement('div');
+                entryDiv.className = 'savings-entry';
+                entryDiv.innerHTML = `
+                    <div>
+                        <span class="savings-amount">+$${entry.amount.toLocaleString()}</span>
+                        <span style="color: #7f8c8d; font-size: 0.8em; margin-left: 10px;">
+                            ${entry.type === 'inicial' ? '(Inicial)' : '(Ahorro)'}
+                        </span>
+                    </div>
+                    <div class="savings-date">${entry.date}</div>
+                `;
+                historyContainer.appendChild(entryDiv);
+            });
+
+            savingsData.history.reverse(); // Restaurar orden original
+        }
+
+        // Inicializar la aplicación
+        function initApp() {
+            loadSavedData();
+            updateSavingsHistory();
+        }
+
+        // Cargar la aplicación cuando se carga la página
+        document.addEventListener('DOMContentLoaded', initApp);
+
+        // También agregar botón para resetear datos
+        function resetData() {
+            if (confirm('¿Estás seguro de que quieres borrar todos los datos? Esta acción no se puede deshacer.')) {
+                localStorage.removeItem('carSavingsData');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
