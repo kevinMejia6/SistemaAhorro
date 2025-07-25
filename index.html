@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -402,17 +403,29 @@
                 grid-template-columns: 1fr;
                 gap: 2rem;
             }
-            
+
             .header h1 {
                 font-size: 2rem;
             }
-            
+
             .progress-overview {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+
+        .progress-car {
+            position: absolute;
+            top: -10px;
+            /* Ajusta la altura del carro */
+            left: 0%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            transition: left 1s ease;
+            z-index: 2;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -429,7 +442,7 @@
         <div class="main-content">
             <div class="card">
                 <h2>Configuración</h2>
-                
+
                 <div class="input-group">
                     <label for="carPrice">Precio del carro</label>
                     <input type="number" id="carPrice" placeholder="15,000">
@@ -448,8 +461,10 @@
                 <button class="btn" onclick="setGoal()">Establecer Meta</button>
                 <button class="btn btn-secondary" onclick="resetData()">Resetear Datos</button>
 
-                <div id="addSavingsSection" class="hidden" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-                    <h3 style="font-size: 1.1rem; font-weight: 500; margin-bottom: 1rem; color: #f9fafb;">Agregar Ahorro</h3>
+                <div id="addSavingsSection" class="hidden"
+                    style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                    <h3 style="font-size: 1.1rem; font-weight: 500; margin-bottom: 1rem; color: #f9fafb;">Agregar Ahorro
+                    </h3>
                     <div class="input-group">
                         <label for="savingAmount">Cantidad</label>
                         <input type="number" id="savingAmount" placeholder="200">
@@ -480,10 +495,12 @@
                     </div>
 
                     <div class="card">
-                        <div class="progress-bar-container">
+                        <div class="progress-bar-container" style="position: relative;">
+                            <div class="progress-car" id="progressCar">🚗</div>
                             <div class="progress-bar" id="progressBar">0%</div>
                         </div>
-                        
+
+
                         <div id="motivationalMessage" class="motivational-message"></div>
                     </div>
 
@@ -517,18 +534,21 @@
         function loadSavedData() {
             const saved = JSON.parse(localStorage.getItem('carSavingsData') || '{}');
             if (saved.goal) {
-                savingsData = { ...savingsData, ...saved };
-                
+                savingsData = {
+                    ...savingsData,
+                    ...saved
+                };
+
                 // Restaurar valores en los inputs
                 document.getElementById('carPrice').value = savingsData.goal;
                 document.getElementById('currentSavings').value = savingsData.currentAmount - getTotalFromHistory();
                 document.getElementById('monthlyTarget').value = savingsData.monthlyTarget;
-                
+
                 // Mostrar el progreso si ya hay datos guardados
                 document.getElementById('setupPrompt').classList.add('hidden');
                 document.getElementById('progressContent').classList.remove('hidden');
                 document.getElementById('addSavingsSection').classList.remove('hidden');
-                
+
                 updateProgress();
                 createMilestones();
                 updateSavingsHistory();
@@ -616,9 +636,13 @@
             const monthsLeft = remaining > 0 ? Math.ceil(remaining / savingsData.monthlyTarget) : 0;
             const daysLeft = monthsLeft * 30;
 
+            // Mover barra de progreso
             document.getElementById('progressBar').style.width = progress + '%';
             document.getElementById('progressBar').textContent = progress.toFixed(1) + '%';
-            
+
+            // Mover el carrito
+            document.getElementById('progressCar').style.left = progress + '%';
+
             document.getElementById('totalSaved').textContent = '$' + savingsData.currentAmount.toLocaleString();
             document.getElementById('remaining').textContent = '$' + remaining.toLocaleString();
             document.getElementById('monthsLeft').textContent = monthsLeft;
@@ -629,16 +653,40 @@
         }
 
         function updateMotivationalMessage(progress) {
-            const messages = [
-                { min: 0, max: 10, msg: "Excelente inicio. Cada peso cuenta para tu primer carro." },
-                { min: 10, max: 25, msg: "Vas por buen camino. Ya tienes el " + progress.toFixed(0) + "% de tu meta." },
-                { min: 25, max: 50, msg: "Increíble progreso. Estás a mitad del camino hacia tu carro." },
-                { min: 50, max: 75, msg: "Imparable. Ya puedes ver tu carro cada vez más cerca." },
-                { min: 75, max: 90, msg: "Casi lo logras. Tu primer carro está al alcance de tus manos." },
-                { min: 90, max: 100, msg: "¡Felicidades! Ya tienes el dinero para tu primer carro." }
+            const messages = [{
+                    min: 0,
+                    max: 10,
+                    msg: "Excelente inicio. Cada peso cuenta para tu primer carro."
+                },
+                {
+                    min: 10,
+                    max: 25,
+                    msg: "Vas por buen camino. Ya tienes el " + progress.toFixed(0) + "% de tu meta."
+                },
+                {
+                    min: 25,
+                    max: 50,
+                    msg: "Increíble progreso. Estás a mitad del camino hacia tu carro."
+                },
+                {
+                    min: 50,
+                    max: 75,
+                    msg: "Imparable. Ya puedes ver tu carro cada vez más cerca."
+                },
+                {
+                    min: 75,
+                    max: 90,
+                    msg: "Casi lo logras. Tu primer carro está al alcance de tus manos."
+                },
+                {
+                    min: 90,
+                    max: 100,
+                    msg: "¡Felicidades! Ya tienes el dinero para tu primer carro."
+                }
             ];
 
-            const currentMessage = messages.find(m => progress >= m.min && progress < m.max) || messages[messages.length - 1];
+            const currentMessage = messages.find(m => progress >= m.min && progress < m.max) || messages[messages
+                .length - 1];
             document.getElementById('motivationalMessage').textContent = currentMessage.msg;
         }
 
@@ -646,11 +694,22 @@
             const milestonesContainer = document.getElementById('milestones');
             milestonesContainer.innerHTML = '';
 
-            const milestones = [
-                { percent: 25, title: "Primer 25%" },
-                { percent: 50, title: "Mitad del camino" },
-                { percent: 75, title: "Ya casi" },
-                { percent: 100, title: "Meta alcanzada" }
+            const milestones = [{
+                    percent: 25,
+                    title: "Primer 25%"
+                },
+                {
+                    percent: 50,
+                    title: "Mitad del camino"
+                },
+                {
+                    percent: 75,
+                    title: "Ya casi"
+                },
+                {
+                    percent: 100,
+                    title: "Meta alcanzada"
+                }
             ];
 
             const currentProgress = (savingsData.currentAmount / savingsData.goal) * 100;
@@ -658,7 +717,7 @@
             milestones.forEach(milestone => {
                 const milestoneDiv = document.createElement('div');
                 milestoneDiv.className = 'milestone';
-                
+
                 const isCompleted = currentProgress >= milestone.percent;
                 if (isCompleted) {
                     milestoneDiv.classList.add('completed');
@@ -669,7 +728,7 @@
                     <div class="milestone-text">${milestone.title}</div>
                     <div class="milestone-amount">$${(savingsData.goal * milestone.percent / 100).toLocaleString()}</div>
                 `;
-                
+
                 milestonesContainer.appendChild(milestoneDiv);
             });
         }
@@ -683,7 +742,8 @@
             historyContainer.innerHTML = '';
 
             if (savingsData.history.length === 0) {
-                historyContainer.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 1rem;">No hay ahorros registrados aún</p>';
+                historyContainer.innerHTML =
+                    '<p style="text-align: center; color: #6b7280; padding: 1rem;">No hay ahorros registrados aún</p>';
                 return;
             }
 
@@ -705,13 +765,13 @@
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
+
             document.documentElement.setAttribute('data-theme', newTheme);
-            
+
             // Actualizar icono
             const themeIcon = document.getElementById('themeIcon');
             themeIcon.textContent = newTheme === 'light' ? '🌙' : '☀️';
-            
+
             // Guardar preferencia
             localStorage.setItem('theme', newTheme);
         }
@@ -720,7 +780,7 @@
         function loadTheme() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
-            
+
             const themeIcon = document.getElementById('themeIcon');
             themeIcon.textContent = savedTheme === 'light' ? '🌙' : '☀️';
         }
@@ -744,4 +804,5 @@
         }
     </script>
 </body>
+
 </html>
