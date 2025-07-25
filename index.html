@@ -11,202 +11,323 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: rgba(17, 17, 19, 0.8);
+            --bg-tertiary: rgba(17, 17, 19, 0.6);
+            --text-primary: #ffffff;
+            --text-secondary: #d1d5db;
+            --text-muted: #9ca3af;
+            --border-primary: rgba(255, 255, 255, 0.1);
+            --border-secondary: rgba(255, 255, 255, 0.08);
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --card-bg: rgba(17, 17, 19, 0.8);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255, 255, 255, 0.9);
+            --bg-tertiary: rgba(255, 255, 255, 0.7);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-primary: rgba(0, 0, 0, 0.1);
+            --border-secondary: rgba(0, 0, 0, 0.05);
+            --input-bg: rgba(0, 0, 0, 0.03);
+            --card-bg: rgba(255, 255, 255, 0.9);
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 20px;
+            line-height: 1.6;
+            transition: all 0.3s ease;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
+            padding: 2rem;
         }
 
         .header {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-            padding: 30px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .header::before {
-            content: '🚗';
-            position: absolute;
-            font-size: 200px;
-            opacity: 0.1;
-            top: -50px;
-            right: -50px;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+        .header-content {
+            flex: 1;
+            text-align: center;
         }
 
         .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        .theme-toggle-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
         }
 
         .main-content {
-            padding: 30px;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            grid-template-columns: 400px 1fr;
+            gap: 3rem;
+            align-items: start;
         }
 
-        .setup-section, .progress-section {
-            background: #f8f9fc;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            padding: 2rem;
         }
 
-        .setup-section h2, .progress-section h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 10px;
+        .card h2 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
         }
 
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
         }
 
         .input-group label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #34495e;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 400;
         }
 
-        .input-group input, .input-group select {
+        .input-group input {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s ease;
+            padding: 0.75rem 1rem;
+            background: var(--input-bg);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.2s ease;
         }
 
-        .input-group input:focus, .input-group select:focus {
-            border-color: #3498db;
+        .input-group input:focus {
             outline: none;
-            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            background: var(--input-bg);
         }
 
         .btn {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            background: #6366f1;
             color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            width: 100%;
-            margin-top: 10px;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+            background: #5855eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(239, 68, 68, 0.2);
         }
 
         .btn-add {
-            background: linear-gradient(135deg, #27ae60, #229954);
-            margin-top: 10px;
+            background: #10b981;
             width: auto;
-            padding: 8px 20px;
-            font-size: 14px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-add:hover {
+            background: #059669;
+        }
+
+        .progress-section {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .progress-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 400;
         }
 
         .progress-bar-container {
-            background: #ecf0f1;
-            border-radius: 25px;
-            padding: 5px;
-            margin: 20px 0;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            background: var(--input-bg);
+            border-radius: 12px;
+            padding: 4px;
+            margin: 2rem 0;
         }
 
         .progress-bar {
-            height: 30px;
-            background: linear-gradient(90deg, #27ae60, #2ecc71);
-            border-radius: 20px;
-            transition: width 1s ease;
+            height: 24px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            border-radius: 8px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
-        .stats-grid {
+        .milestones {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
+            gap: 1rem;
         }
 
-        .stat-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease;
+        .milestone {
+            background: var(--input-bg);
+            border: 1px solid var(--border-secondary);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.2s ease;
         }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
+        .milestone-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--border-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
         }
 
-        .stat-value {
-            font-size: 1.8em;
-            font-weight: bold;
-            margin-bottom: 5px;
+        .milestone.completed .milestone-icon {
+            background: #10b981;
         }
 
-        .stat-label {
-            font-size: 0.9em;
-            opacity: 0.9;
+        .milestone-text {
+            flex: 1;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .milestone-amount {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .milestone.completed {
+            background: rgba(16, 185, 129, 0.05);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .milestone.completed .milestone-text {
+            color: #10b981;
         }
 
         .savings-history {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
+            background: rgba(17, 17, 19, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 1.5rem;
             max-height: 300px;
             overflow-y: auto;
-            border: 2px solid #ecf0f1;
+        }
+
+        .savings-history h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: #f9fafb;
         }
 
         .savings-entry {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #ecf0f1;
-            animation: slideIn 0.5s ease;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .savings-entry:last-child {
@@ -214,57 +335,79 @@
         }
 
         .savings-amount {
-            font-weight: bold;
-            color: #27ae60;
-            font-size: 1.1em;
+            font-weight: 600;
+            color: #10b981;
+            font-size: 1rem;
         }
 
         .savings-date {
-            color: #7f8c8d;
-            font-size: 0.9em;
+            color: #6b7280;
+            font-size: 0.85rem;
+        }
+
+        .savings-type {
+            background: rgba(99, 102, 241, 0.1);
+            color: #a5b4fc;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
         }
 
         .motivational-message {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
             text-align: center;
-            margin: 20px 0;
-            font-size: 1.1em;
-            font-weight: 600;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            color: #a5b4fc;
+            font-size: 1rem;
+            font-weight: 400;
         }
 
-        .milestone {
-            background: linear-gradient(135deg, #feca57, #ff9ff3);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 10px 0;
+        .setup-prompt {
+            grid-column: 1 / -1;
             text-align: center;
-            font-weight: bold;
-        }
-
-        .milestone.completed {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            padding: 3rem;
         }
 
         .hidden {
             display: none;
         }
 
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.5);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.7);
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 2rem;
             }
             
             .header h1 {
-                font-size: 2em;
+                font-size: 2rem;
             }
             
-            .stats-grid {
+            .progress-overview {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
@@ -273,52 +416,51 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚗 Mi Primer Carro</h1>
-            <p>Sistema de Ahorro Inteligente</p>
+            <div></div>
+            <div class="header-content">
+                <h1>Mi Primer Carro</h1>
+                <p>Sistema de ahorro inteligente</p>
+            </div>
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <div class="theme-toggle-icon" id="themeIcon">🌙</div>
+            </div>
         </div>
 
         <div class="main-content">
-            <div class="setup-section">
-                <h2>🎯 Configuración de Meta</h2>
+            <div class="card">
+                <h2>Configuración</h2>
                 
                 <div class="input-group">
-                    <label for="carPrice">Precio del carro ($):</label>
-                    <input type="number" id="carPrice" placeholder="Ej: 15000">
+                    <label for="carPrice">Precio del carro</label>
+                    <input type="number" id="carPrice" placeholder="15,000">
                 </div>
 
                 <div class="input-group">
-                    <label for="currentSavings">Ahorros actuales ($):</label>
-                    <input type="number" id="currentSavings" placeholder="Ej: 2000">
+                    <label for="currentSavings">Ahorros actuales</label>
+                    <input type="number" id="currentSavings" placeholder="2,000">
                 </div>
 
                 <div class="input-group">
-                    <label for="monthlyTarget">Meta mensual de ahorro ($):</label>
-                    <input type="number" id="monthlyTarget" placeholder="Ej: 500">
+                    <label for="monthlyTarget">Meta mensual</label>
+                    <input type="number" id="monthlyTarget" placeholder="500">
                 </div>
 
-                <button class="btn" onclick="setGoal()">🚀 Establecer Meta</button>
-                
-                <button class="btn" onclick="resetData()" style="background: linear-gradient(135deg, #e74c3c, #c0392b); margin-top: 10px; font-size: 14px;">🗑️ Resetear Datos</button>
+                <button class="btn" onclick="setGoal()">Establecer Meta</button>
+                <button class="btn btn-secondary" onclick="resetData()">Resetear Datos</button>
 
-                <div id="addSavingsSection" class="hidden" style="margin-top: 30px; border-top: 2px solid #ecf0f1; padding-top: 20px;">
-                    <h3>💰 Agregar Ahorro</h3>
+                <div id="addSavingsSection" class="hidden" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                    <h3 style="font-size: 1.1rem; font-weight: 500; margin-bottom: 1rem; color: #f9fafb;">Agregar Ahorro</h3>
                     <div class="input-group">
-                        <label for="savingAmount">Cantidad ahorrada ($):</label>
-                        <input type="number" id="savingAmount" placeholder="Ej: 200">
+                        <label for="savingAmount">Cantidad</label>
+                        <input type="number" id="savingAmount" placeholder="200">
                     </div>
-                    <button class="btn-add" onclick="addSaving()">➕ Agregar Ahorro</button>
+                    <button class="btn-add" onclick="addSaving()">Agregar</button>
                 </div>
             </div>
 
             <div class="progress-section">
-                <h2>📊 Progreso Actual</h2>
-                
                 <div id="progressContent" class="hidden">
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="progressBar">0%</div>
-                    </div>
-
-                    <div class="stats-grid">
+                    <div class="progress-overview">
                         <div class="stat-card">
                             <div class="stat-value" id="totalSaved">$0</div>
                             <div class="stat-label">Total Ahorrado</div>
@@ -337,18 +479,27 @@
                         </div>
                     </div>
 
-                    <div id="motivationalMessage" class="motivational-message"></div>
+                    <div class="card">
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="progressBar">0%</div>
+                        </div>
+                        
+                        <div id="motivationalMessage" class="motivational-message"></div>
+                    </div>
 
-                    <div id="milestones"></div>
+                    <div class="card">
+                        <h2>Hitos de Progreso</h2>
+                        <div class="milestones" id="milestones"></div>
+                    </div>
 
                     <div class="savings-history">
-                        <h3>📈 Historial de Ahorros</h3>
+                        <h3>Historial de Ahorros</h3>
                         <div id="savingsHistory"></div>
                     </div>
                 </div>
 
-                <div id="setupPrompt" class="motivational-message">
-                    ⬅️ Configura tu meta para comenzar a ahorrar para tu primer carro
+                <div id="setupPrompt" class="setup-prompt card">
+                    Configura tu meta para comenzar a ahorrar para tu primer carro
                 </div>
             </div>
         </div>
@@ -479,12 +630,12 @@
 
         function updateMotivationalMessage(progress) {
             const messages = [
-                { min: 0, max: 10, msg: "🌟 ¡Excelente inicio! Cada peso cuenta para tu primer carro." },
-                { min: 10, max: 25, msg: "🚀 ¡Vas por buen camino! Ya tienes el " + progress.toFixed(0) + "% de tu meta." },
-                { min: 25, max: 50, msg: "💪 ¡Increíble progreso! Estás a mitad del camino hacia tu carro." },
-                { min: 50, max: 75, msg: "🔥 ¡Imparable! Ya puedes ver tu carro cada vez más cerca." },
-                { min: 75, max: 90, msg: "⭐ ¡Casi lo logras! Tu primer carro está al alcance de tus manos." },
-                { min: 90, max: 100, msg: "🎉 ¡FELICIDADES! ¡Ya tienes el dinero para tu primer carro!" }
+                { min: 0, max: 10, msg: "Excelente inicio. Cada peso cuenta para tu primer carro." },
+                { min: 10, max: 25, msg: "Vas por buen camino. Ya tienes el " + progress.toFixed(0) + "% de tu meta." },
+                { min: 25, max: 50, msg: "Increíble progreso. Estás a mitad del camino hacia tu carro." },
+                { min: 50, max: 75, msg: "Imparable. Ya puedes ver tu carro cada vez más cerca." },
+                { min: 75, max: 90, msg: "Casi lo logras. Tu primer carro está al alcance de tus manos." },
+                { min: 90, max: 100, msg: "¡Felicidades! Ya tienes el dinero para tu primer carro." }
             ];
 
             const currentMessage = messages.find(m => progress >= m.min && progress < m.max) || messages[messages.length - 1];
@@ -493,13 +644,13 @@
 
         function createMilestones() {
             const milestonesContainer = document.getElementById('milestones');
-            milestonesContainer.innerHTML = '<h3>🏆 Hitos de Progreso</h3>';
+            milestonesContainer.innerHTML = '';
 
             const milestones = [
-                { percent: 25, title: "¡Primer 25%!" },
-                { percent: 50, title: "¡Mitad del camino!" },
-                { percent: 75, title: "¡Ya casi!" },
-                { percent: 100, title: "¡META ALCANZADA!" }
+                { percent: 25, title: "Primer 25%" },
+                { percent: 50, title: "Mitad del camino" },
+                { percent: 75, title: "Ya casi" },
+                { percent: 100, title: "Meta alcanzada" }
             ];
 
             const currentProgress = (savingsData.currentAmount / savingsData.goal) * 100;
@@ -507,12 +658,18 @@
             milestones.forEach(milestone => {
                 const milestoneDiv = document.createElement('div');
                 milestoneDiv.className = 'milestone';
-                if (currentProgress >= milestone.percent) {
+                
+                const isCompleted = currentProgress >= milestone.percent;
+                if (isCompleted) {
                     milestoneDiv.classList.add('completed');
-                    milestoneDiv.innerHTML = `✅ ${milestone.title} - $${(savingsData.goal * milestone.percent / 100).toLocaleString()}`;
-                } else {
-                    milestoneDiv.innerHTML = `🎯 ${milestone.title} - $${(savingsData.goal * milestone.percent / 100).toLocaleString()}`;
                 }
+
+                milestoneDiv.innerHTML = `
+                    <div class="milestone-icon">${isCompleted ? '✓' : milestone.percent}</div>
+                    <div class="milestone-text">${milestone.title}</div>
+                    <div class="milestone-amount">$${(savingsData.goal * milestone.percent / 100).toLocaleString()}</div>
+                `;
+                
                 milestonesContainer.appendChild(milestoneDiv);
             });
         }
@@ -526,30 +683,51 @@
             historyContainer.innerHTML = '';
 
             if (savingsData.history.length === 0) {
-                historyContainer.innerHTML = '<p style="text-align: center; color: #7f8c8d;">No hay ahorros registrados aún</p>';
+                historyContainer.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 1rem;">No hay ahorros registrados aún</p>';
                 return;
             }
 
-            savingsData.history.reverse().forEach(entry => {
+            savingsData.history.slice().reverse().forEach(entry => {
                 const entryDiv = document.createElement('div');
                 entryDiv.className = 'savings-entry';
                 entryDiv.innerHTML = `
                     <div>
                         <span class="savings-amount">+$${entry.amount.toLocaleString()}</span>
-                        <span style="color: #7f8c8d; font-size: 0.8em; margin-left: 10px;">
-                            ${entry.type === 'inicial' ? '(Inicial)' : '(Ahorro)'}
-                        </span>
+                        <span class="savings-type">${entry.type === 'inicial' ? 'Inicial' : 'Ahorro'}</span>
                     </div>
                     <div class="savings-date">${entry.date}</div>
                 `;
                 historyContainer.appendChild(entryDiv);
             });
+        }
 
-            savingsData.history.reverse(); // Restaurar orden original
+        // Función para cambiar tema
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            
+            // Actualizar icono
+            const themeIcon = document.getElementById('themeIcon');
+            themeIcon.textContent = newTheme === 'light' ? '🌙' : '☀️';
+            
+            // Guardar preferencia
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Cargar tema guardado
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            const themeIcon = document.getElementById('themeIcon');
+            themeIcon.textContent = savedTheme === 'light' ? '🌙' : '☀️';
         }
 
         // Inicializar la aplicación
         function initApp() {
+            loadTheme();
             loadSavedData();
             updateSavingsHistory();
         }
