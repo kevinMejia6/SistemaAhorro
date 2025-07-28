@@ -534,37 +534,41 @@
 
         // Cargar datos guardados al iniciar
         function loadSavedData() {
-            // Nota: localStorage no está disponible en este entorno, 
-            // pero mantengo la estructura para cuando se use en un entorno real
-            // const saved = JSON.parse(localStorage.getItem('carSavingsData') || '{}');
-            const saved = {};
-            
-            if (saved.goal) {
-                savingsData = {
-                    ...savingsData,
-                    ...saved
-                };
+            try {
+                const saved = JSON.parse(localStorage.getItem('carSavingsData') || '{}');
+                
+                if (saved.goal) {
+                    savingsData = {
+                        ...savingsData,
+                        ...saved
+                    };
 
-                // Restaurar valores en los inputs
-                document.getElementById('carPrice').value = savingsData.goal;
-                document.getElementById('currentSavings').value = savingsData.currentAmount - getTotalFromHistory();
-                document.getElementById('monthlyTarget').value = savingsData.monthlyTarget;
+                    // Restaurar valores en los inputs
+                    document.getElementById('carPrice').value = savingsData.goal;
+                    document.getElementById('currentSavings').value = savingsData.currentAmount - getTotalFromHistory();
+                    document.getElementById('monthlyTarget').value = savingsData.monthlyTarget;
 
-                // Mostrar el progreso si ya hay datos guardados
-                document.getElementById('setupPrompt').classList.add('hidden');
-                document.getElementById('progressContent').classList.remove('hidden');
-                document.getElementById('addSavingsSection').classList.remove('hidden');
+                    // Mostrar el progreso si ya hay datos guardados
+                    document.getElementById('setupPrompt').classList.add('hidden');
+                    document.getElementById('progressContent').classList.remove('hidden');
+                    document.getElementById('addSavingsSection').classList.remove('hidden');
 
-                updateProgress();
-                createMilestones();
-                updateSavingsHistory();
+                    updateProgress();
+                    createMilestones();
+                    updateSavingsHistory();
+                }
+            } catch (error) {
+                console.error('Error cargando datos:', error);
             }
         }
 
-        // Guardar datos (simulado para este entorno)
+        // Guardar datos en localStorage
         function saveData() {
-            // localStorage.setItem('carSavingsData', JSON.stringify(savingsData));
-            console.log('Datos guardados:', savingsData);
+            try {
+                localStorage.setItem('carSavingsData', JSON.stringify(savingsData));
+            } catch (error) {
+                console.error('Error guardando datos:', error);
+            }
         }
 
         // Obtener total de ahorros del historial (excluyendo inicial)
@@ -772,18 +776,29 @@
             const themeIcon = document.getElementById('themeIcon');
             themeIcon.textContent = newTheme === 'light' ? '🌙' : '☀️';
 
-            // Guardar preferencia (simulado)
-            // localStorage.setItem('theme', newTheme);
+            // Guardar preferencia de tema
+            try {
+                localStorage.setItem('theme', newTheme);
+            } catch (error) {
+                console.error('Error guardando tema:', error);
+            }
         }
 
         // Cargar tema guardado
         function loadTheme() {
-            // const savedTheme = localStorage.getItem('theme') || 'dark';
-            const savedTheme = 'dark';
-            document.documentElement.setAttribute('data-theme', savedTheme);
+            try {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                document.documentElement.setAttribute('data-theme', savedTheme);
 
-            const themeIcon = document.getElementById('themeIcon');
-            themeIcon.textContent = savedTheme === 'light' ? '🌙' : '☀️';
+                const themeIcon = document.getElementById('themeIcon');
+                themeIcon.textContent = savedTheme === 'light' ? '🌙' : '☀️';
+            } catch (error) {
+                console.error('Error cargando tema:', error);
+                // Usar tema por defecto si hay error
+                document.documentElement.setAttribute('data-theme', 'dark');
+                const themeIcon = document.getElementById('themeIcon');
+                themeIcon.textContent = '🌙';
+            }
         }
 
         // Inicializar la aplicación
@@ -799,8 +814,20 @@
         // Resetear datos
         function resetData() {
             if (confirm('¿Estás seguro de que quieres borrar todos los datos? Esta acción no se puede deshacer.')) {
-                // localStorage.removeItem('carSavingsData');
-                location.reload();
+                try {
+                    localStorage.removeItem('carSavingsData');
+                    location.reload();
+                } catch (error) {
+                    console.error('Error eliminando datos:', error);
+                    // Resetear manualmente si hay problemas con localStorage
+                    savingsData = {
+                        goal: 0,
+                        currentAmount: 0,
+                        monthlyTarget: 0,
+                        history: []
+                    };
+                    location.reload();
+                }
             }
         }
     </script>
