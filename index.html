@@ -207,7 +207,7 @@
 
         .progress-overview {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1.5rem;
         }
 
@@ -416,7 +416,6 @@
         .progress-car {
             position: absolute;
             top: -10px;
-            /* Ajusta la altura del carro */
             left: 0%;
             transform: translateX(-50%);
             font-size: 1.5rem;
@@ -485,6 +484,10 @@
                             <div class="stat-label">Falta Ahorrar</div>
                         </div>
                         <div class="stat-card">
+                            <div class="stat-value" id="yearsLeft">0</div>
+                            <div class="stat-label">Años Restantes</div>
+                        </div>
+                        <div class="stat-card">
                             <div class="stat-value" id="monthsLeft">0</div>
                             <div class="stat-label">Meses Restantes</div>
                         </div>
@@ -499,7 +502,6 @@
                             <div class="progress-car" id="progressCar">🚗</div>
                             <div class="progress-bar" id="progressBar">0%</div>
                         </div>
-
 
                         <div id="motivationalMessage" class="motivational-message"></div>
                     </div>
@@ -532,7 +534,11 @@
 
         // Cargar datos guardados al iniciar
         function loadSavedData() {
-            const saved = JSON.parse(localStorage.getItem('carSavingsData') || '{}');
+            // Nota: localStorage no está disponible en este entorno, 
+            // pero mantengo la estructura para cuando se use en un entorno real
+            // const saved = JSON.parse(localStorage.getItem('carSavingsData') || '{}');
+            const saved = {};
+            
             if (saved.goal) {
                 savingsData = {
                     ...savingsData,
@@ -555,9 +561,10 @@
             }
         }
 
-        // Guardar datos en localStorage
+        // Guardar datos (simulado para este entorno)
         function saveData() {
-            localStorage.setItem('carSavingsData', JSON.stringify(savingsData));
+            // localStorage.setItem('carSavingsData', JSON.stringify(savingsData));
+            console.log('Datos guardados:', savingsData);
         }
 
         // Obtener total de ahorros del historial (excluyendo inicial)
@@ -606,7 +613,7 @@
 
             updateProgress();
             createMilestones();
-            saveData(); // Guardar datos después de establecer la meta
+            saveData();
         }
 
         function addSaving() {
@@ -627,13 +634,14 @@
             document.getElementById('savingAmount').value = '';
             updateProgress();
             updateSavingsHistory();
-            saveData(); // Guardar datos después de agregar ahorro
+            saveData();
         }
 
         function updateProgress() {
             const progress = Math.min((savingsData.currentAmount / savingsData.goal) * 100, 100);
             const remaining = Math.max(savingsData.goal - savingsData.currentAmount, 0);
             const monthsLeft = remaining > 0 ? Math.ceil(remaining / savingsData.monthlyTarget) : 0;
+            const yearsLeft = monthsLeft > 0 ? Math.ceil(monthsLeft / 12) : 0;
             const daysLeft = monthsLeft * 30;
 
             // Mover barra de progreso
@@ -645,49 +653,41 @@
 
             document.getElementById('totalSaved').textContent = '$' + savingsData.currentAmount.toLocaleString();
             document.getElementById('remaining').textContent = '$' + remaining.toLocaleString();
+            document.getElementById('yearsLeft').textContent = yearsLeft;
             document.getElementById('monthsLeft').textContent = monthsLeft;
             document.getElementById('daysLeft').textContent = daysLeft;
 
-            updateMotivationalMessage(progress);
+            updateMotivationalMessage(progress, yearsLeft);
             updateMilestones();
         }
 
-        function updateMotivationalMessage(progress) {
-            const messages = [{
-                    min: 0,
-                    max: 10,
-                    msg: "Excelente inicio. Cada peso cuenta para tu primer carro."
-                },
-                {
-                    min: 10,
-                    max: 25,
-                    msg: "Vas por buen camino. Ya tienes el " + progress.toFixed(0) + "% de tu meta."
-                },
-                {
-                    min: 25,
-                    max: 50,
-                    msg: "Increíble progreso. Estás a mitad del camino hacia tu carro."
-                },
-                {
-                    min: 50,
-                    max: 75,
-                    msg: "Imparable. Ya puedes ver tu carro cada vez más cerca."
-                },
-                {
-                    min: 75,
-                    max: 90,
-                    msg: "Casi lo logras. Tu primer carro está al alcance de tus manos."
-                },
-                {
-                    min: 90,
-                    max: 100,
-                    msg: "¡Felicidades! Ya tienes el dinero para tu primer carro."
-                }
-            ];
+        function updateMotivationalMessage(progress, years) {
+            let msg = "";
+            
+            if (progress >= 100) {
+                msg = "¡Felicidades! Ya tienes el dinero para tu primer carro. 🎉";
+            } else if (progress >= 90) {
+                msg = "¡Casi lo logras! Tu primer carro está al alcance de tus manos.";
+            } else if (progress >= 75) {
+                msg = "Imparable. Ya puedes ver tu carro cada vez más cerca.";
+            } else if (progress >= 50) {
+                msg = "Increíble progreso. Estás a mitad del camino hacia tu carro.";
+            } else if (progress >= 25) {
+                msg = `Vas por buen camino. Ya tienes el ${progress.toFixed(0)}% de tu meta.`;
+            } else {
+                msg = "Excelente inicio. Cada peso cuenta para tu primer carro.";
+            }
 
-            const currentMessage = messages.find(m => progress >= m.min && progress < m.max) || messages[messages
-                .length - 1];
-            document.getElementById('motivationalMessage').textContent = currentMessage.msg;
+            // Agregar información sobre los años si es relevante
+            if (years > 0 && progress < 100) {
+                if (years === 1) {
+                    msg += ` Te falta aproximadamente 1 año para alcanzar tu meta.`;
+                } else {
+                    msg += ` Te faltan aproximadamente ${years} años para alcanzar tu meta.`;
+                }
+            }
+
+            document.getElementById('motivationalMessage').textContent = msg;
         }
 
         function createMilestones() {
@@ -772,13 +772,14 @@
             const themeIcon = document.getElementById('themeIcon');
             themeIcon.textContent = newTheme === 'light' ? '🌙' : '☀️';
 
-            // Guardar preferencia
-            localStorage.setItem('theme', newTheme);
+            // Guardar preferencia (simulado)
+            // localStorage.setItem('theme', newTheme);
         }
 
         // Cargar tema guardado
         function loadTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
+            // const savedTheme = localStorage.getItem('theme') || 'dark';
+            const savedTheme = 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
 
             const themeIcon = document.getElementById('themeIcon');
@@ -795,10 +796,10 @@
         // Cargar la aplicación cuando se carga la página
         document.addEventListener('DOMContentLoaded', initApp);
 
-        // También agregar botón para resetear datos
+        // Resetear datos
         function resetData() {
             if (confirm('¿Estás seguro de que quieres borrar todos los datos? Esta acción no se puede deshacer.')) {
-                localStorage.removeItem('carSavingsData');
+                // localStorage.removeItem('carSavingsData');
                 location.reload();
             }
         }
